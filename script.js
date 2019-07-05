@@ -39,7 +39,7 @@ class ball{
     this.y = y;
     this.size = r;
     //velocity
-    this.v = randomFloat(-0.9,1);
+    this.v = randomFloat(-5,5);
     //direction
     this.xd = randomFloat(-0.9,1);
     this.yd = randomFloat(-0.9,1);
@@ -51,8 +51,6 @@ class ball{
     this.x += this.xd*this.v;
     this.y +=this.yd*this.v;
     // console.log(this.x);
-    
-  
   }
   boxcollision(){
     if ((this.x-this.size) <=0 || (this.x+this.size) >= canvas.width){
@@ -63,7 +61,7 @@ class ball{
     }
   } 
   checkCollision(arr){
-    if (dist( this.x, this.y, arr.x, arr.y)- (this.size+arr.size)< 0){
+    if (dist((this.x+this.xd*this.v), (this.y+this.yd*this.v), (arr.x+arr.xd*arr.v), (arr.y+arr.yd*arr.v))- (this.size+arr.size)< 0){
       return true;
     }
     else{
@@ -85,6 +83,7 @@ class ball{
             this.xd = tempxd;
             this.yd = tempyd;
             this.v = tempv;
+            continue;
         }
       }
     }
@@ -101,16 +100,16 @@ let cond;
 
 //generates balls on screen
 function generate(){
-  for (let i=0;i<100;i++){
+  for (let i=0;i<randomInt(40,300);i++){
     var x = randomInt(50,1150);
     var y = randomInt(50,650);
-    var r = randomInt(10,40);
+    var r = randomInt(10,30);
     cond = false;
     if(i!==0){
       do{
         x = randomInt(50,1150);
         y = randomInt(50,650);
-        r = randomInt(10,40);
+        r = randomInt(10,30);
         for(j = 0; j < ballarray.length; j++){
           if (dist(x,y,ballarray[j].x,ballarray[j].y) -(r + ballarray[j].size)< 10){
             cond = true;
@@ -132,9 +131,12 @@ generate();
 function func(){
   window.requestAnimationFrame(func);
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#fffff0";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
   ballarray.forEach(item =>{
     // collision();
     // item.move();
+    
     item.strike(ballarray);
     item.move();
     
